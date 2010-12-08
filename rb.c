@@ -27,22 +27,19 @@ int main(int argc,char**argv){
 	srand(time(0));
 	glOrtho(0,512,512,0,1,-1);
 	restart:;
-	unsigned short x=255;
+	int x=255,xv=2;
 	float rv[64],ry[64]={};
-	for(int i=0;i<64;i++)rv[i]=rand()/(float)RAND_MAX*3;
-	char xv=2;
+	for(int i=0;i<64;i++)rv[i]=1+rand()/(float)RAND_MAX*3;
 	for(;;){
 		#ifdef GLX
 		glXSwapBuffers(dpy,Wdo);
 		XEvent ev;
 		while(XPending(dpy)){
-			KeySym ks;
 			XNextEvent(dpy,&ev);
 		#else
 		SDL_GL_SwapBuffers();
 		SDL_Event ev;
 		while(SDL_PollEvent(&ev)){
-			SDLKey ks;
 		#endif
 			switch(ev.type){
 			case ClientMessage:return 0;
@@ -62,13 +59,13 @@ int main(int argc,char**argv){
 					goto restart;
 				}
 				ry[i]=0;
-				rv[i]=1+(rand()&3);
+				rv[i]=rv[i]=1+rand()/(float)RAND_MAX*3;
 			}
 		}
 		#ifdef GLX
-		usleep(30000);
+		usleep(33000);
 		#else
-		SDL_Delay(30);
+		SDL_Delay(33);
 		#endif
 	}
 }
