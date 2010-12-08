@@ -1,14 +1,10 @@
 #ifdef GLX
 #include <GL/glx.h>
 #include <sys/unistd.h>
-#define KEYSYM XKeycodeToKeysym(dpy,ev.xkey.keycode,0)
-#define EV(y) ev.x##y
 #else
 #include <SDL.h>
 #include <SDL_opengl.h>
-#define KEYSYM ev.key.keysym.sym
 #define ClientMessage SDL_QUIT
-#define EV(y) ev.y
 #endif
 #include <stdlib.h>
 #include <time.h>
@@ -31,9 +27,10 @@ int main(int argc,char**argv){
 	srand(time(0));
 	glOrtho(0,512,512,0,1,-1);
 	restart:;
-	unsigned short x=255,ry[64]={},rv[64];
-	for(int i=0;i<64;i++)rv[i]=1+rand()%5;
-	char xv=1,v=3;
+	unsigned short x=255;
+	float rv[64],ry[64]={};
+	for(int i=0;i<64;i++)rv[i]=rand()/(float)RAND_MAX*3;
+	char xv=2;
 	for(;;){
 		#ifdef GLX
 		glXSwapBuffers(dpy,Wdo);
@@ -49,18 +46,13 @@ int main(int argc,char**argv){
 		#endif
 			switch(ev.type){
 			case ClientMessage:return 0;
-			case KeyPress:
-				ks=KEYSYM;
-				v+=ks=='c'&&v<6;
-				v-=ks=='x'&&v;
-				v*=ks!='v';
-				if(ks=='z')xv*=-1;
+			case KeyPress:xv*=-1;
 			}
 		}
-		x=(x+xv*v)&511;
-		glRecti(x-2,508,x+2,512);
+		x=(x+xv)&511;
+		glRecti(x-2,0,x+2,512);
 		glColor3ub(rand(),rand(),rand());
-		glRecti(x-1,509,x+1,511);
+		glRecti(x-1,500,x+1,512);
 		for(int i=0;i<64;i++){
 			glColor3ub(rand(),rand(),rand());
 			glRecti(i*8,0,i*8+8,ry[i]+=rv[i]);
@@ -70,7 +62,7 @@ int main(int argc,char**argv){
 					goto restart;
 				}
 				ry[i]=0;
-				rv[i]=rand()&7;
+				rv[i]=1+(rand()&3);
 			}
 		}
 		#ifdef GLX
