@@ -57,7 +57,7 @@ int main(int argc,char**argv){
 				if(ks=='z')xv*=-1;
 			}
 		}
-		x+=xv*v;
+		x=(x+xv*v)&511;
 		glRecti(x-2,508,x+2,512);
 		glColor3ub(rand(),rand(),rand());
 		glRecti(x-1,509,x+1,511);
