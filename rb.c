@@ -33,7 +33,7 @@ int main(int argc,char**argv){
 	restart:;
 	unsigned short x=255,ry[64]={},rv[64];
 	for(int i=0;i<64;i++)rv[i]=1+rand()%5;
-	char xv=1,vv=3;
+	char xv=1,v=3;
 	for(;;){
 		#ifdef GLX
 		glXSwapBuffers(dpy,Wdo);
@@ -51,13 +51,13 @@ int main(int argc,char**argv){
 			case ClientMessage:return 0;
 			case KeyPress:
 				ks=KEYSYM;
-				if(vv<6)vv+=ks=='w'||ks=='c';
-				if(vv)vv-=ks=='s'||ks=='x';
-				xv=(ks=='d')-(ks=='a')?:xv;
+				v+=ks=='c'&&v<6;
+				v-=ks=='x'&&v;
+				v*=ks!='v';
 				if(ks=='z')xv*=-1;
 			}
 		}
-		x+=xv*vv;
+		x+=xv*v;
 		glRecti(x-2,508,x+2,512);
 		glColor3ub(rand(),rand(),rand());
 		glRecti(x-1,509,x+1,511);
